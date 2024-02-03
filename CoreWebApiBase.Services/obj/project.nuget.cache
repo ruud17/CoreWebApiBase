@@ -1,13 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "JJF1AuaKjEJHWtgICLLqnpAkT0cT+hkNdvvm+Ig/7D5lHC4P7Jj6ybr0uvuVTWnHM4yMOSj74fGK7LlvWG4R8Q==",
+  "dgSpecHash": "DvMR12ny4mM2BjzK4rUNbs6liviR/zne8O6J7ysYf9YhPfEohj4lhGGlSzG7MhJ116RLSRC7MYTRkIQwoxa9wQ==",
   "success": true,
   "projectFilePath": "/Users/mehmedju/Repos/CoreWebApiBase/CoreWebApiBase.Services/CoreWebApiBase.Services.csproj",
   "expectedPackageFiles": [
+    "/Users/mehmedju/.nuget/packages/automapper/12.0.1/automapper.12.0.1.nupkg.sha512",
     "/Users/mehmedju/.nuget/packages/azure.core/1.25.0/azure.core.1.25.0.nupkg.sha512",
     "/Users/mehmedju/.nuget/packages/azure.identity/1.7.0/azure.identity.1.7.0.nupkg.sha512",
     "/Users/mehmedju/.nuget/packages/microsoft.bcl.asyncinterfaces/1.1.1/microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
-    "/Users/mehmedju/.nuget/packages/microsoft.csharp/4.5.0/microsoft.csharp.4.5.0.nupkg.sha512",
+    "/Users/mehmedju/.nuget/packages/microsoft.csharp/4.7.0/microsoft.csharp.4.7.0.nupkg.sha512",
     "/Users/mehmedju/.nuget/packages/microsoft.data.sqlclient/5.1.1/microsoft.data.sqlclient.5.1.1.nupkg.sha512",
     "/Users/mehmedju/.nuget/packages/microsoft.data.sqlclient.sni.runtime/5.1.0/microsoft.data.sqlclient.sni.runtime.5.1.0.nupkg.sha512",
     "/Users/mehmedju/.nuget/packages/microsoft.entityframeworkcore/8.0.1/microsoft.entityframeworkcore.8.0.1.nupkg.sha512",

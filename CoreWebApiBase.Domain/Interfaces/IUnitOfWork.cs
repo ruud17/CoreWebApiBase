@@ -2,7 +2,7 @@ namespace CoreWebApiBase.Domain.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IGenericRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
+        IGenericRepository<T> GetEntityRepository<T>() where T : class;
 
         Task<int> SaveAsync();
     }

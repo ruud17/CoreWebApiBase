@@ -1,5 +1,9 @@
 using CoreWebApiBase.API.ServiceExtension;
+using CoreWebApiBase.Domain.Data;
+using CoreWebApiBase.Services.Mapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 
 namespace CoreWebApiBase.API
 {
@@ -12,16 +16,28 @@ namespace CoreWebApiBase.API
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+        public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
+
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddSwaggerGen(c =>
-        {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoreWebApiBase API", Version = "v1" });
-        });
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoreWebApiBase API", Version = "v1" });
+            });
 
-            // services.AddDIServices(configuration);
+            services.AddDbContext<MovieContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddAutoMapper(typeof(MappingProfile));
+
+            services.AddDIServices(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

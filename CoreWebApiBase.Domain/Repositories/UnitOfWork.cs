@@ -12,7 +12,7 @@ namespace CoreWebApiBase.Domain.Repositories
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public IGenericRepository<T> GetRepository<T>() where T : class
+        public IGenericRepository<T> GetEntityRepository<T>() where T : class
         {
             return new GenericRepository<T>(_dbContext);
         }
