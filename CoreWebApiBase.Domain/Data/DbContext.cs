@@ -10,7 +10,6 @@ namespace CoreWebApiBase.Domain.Data
 
         }
         public DbSet<Movie> Movies { get; set; }
-
     }
 
 }

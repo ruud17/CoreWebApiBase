@@ -9,10 +9,6 @@ namespace CoreWebApiBase.API.ServiceExtension
     {
         public static IServiceCollection AddDIServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<MovieContext>(options =>
-            {
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
-            });
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

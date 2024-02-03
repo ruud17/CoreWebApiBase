@@ -21,7 +21,7 @@ namespace CoreWebApiBase.API
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoreWebApiBase API", Version = "v1" });
         });
 
-            services.AddDIServices(configuration);
+            // services.AddDIServices(configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

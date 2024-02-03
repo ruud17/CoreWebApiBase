@@ -6,7 +6,6 @@ namespace CoreWebApiBase.Domain.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-
         private readonly MovieContext _dbContext;
         private readonly DbSet<T> _table;
 
