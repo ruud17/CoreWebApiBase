@@ -80,7 +80,7 @@ namespace UnitOfWorkDemo.Controllers
                 }
 
                 _logger.LogError(LoggingMessages.GetMovieLogMessage(LogMessageType.GetSingleMovieError, null, id));
-                return BadRequest();
+                return NotFound();
             }
             catch (Exception ex)
             {
