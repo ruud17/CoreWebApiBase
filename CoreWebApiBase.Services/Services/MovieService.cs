@@ -1,4 +1,5 @@
 using AutoMapper;
+using CoreWebApiBase.Domain.Enum;
 using CoreWebApiBase.Domain.Interfaces;
 using CoreWebApiBase.Domain.Models;
 using CoreWebApiBase.Services.Dto;
@@ -18,43 +19,6 @@ namespace CoreWebApiBase.Services.Services
             _repository = _unitOfWork.GetEntityRepository<Movie>();
             _mapper = mapper;
         }
-        // public async Task<IEnumerable<MovieResponseDto>> GetAllMovies()
-        // {
-        //     var movies = await _movieRepository.GetAll();
-        //     return _mapper.Map<IEnumerable<MovieDto>>(movies);
-        // }
-
-        //    public async Task<MovieDto> GetMovieById(int id)
-        // {
-        //     var movie = await _movieRepository.GetById(id);
-        //     return _mapper.Map<MovieDto>(movie);
-        // }
-
-
-
-        // private readonly IUnitOfWork _unitOfWork;
-
-        // public YourEntityService(IUnitOfWork unitOfWork)
-        // {
-        //     _unitOfWork = unitOfWork;
-        // }
-
-        public async Task<IEnumerable<MovieResponseDto>> GetAllMovies()
-        {
-            var movies = await _repository.GetAll();
-            return _mapper.Map<IEnumerable<MovieResponseDto>>(movies);
-        }
-
-        // public async Task<YourEntity> GetYourEntityById(int id)
-        // {
-        //     return await _unitOfWork.YourEntityRepository.GetById(id);
-        // }
-
-        // public async Task AddYourEntity(YourEntity entity)
-        // {
-        //     await _unitOfWork.YourEntityRepository.Add(entity);
-        //     await _unitOfWork.SaveAsync();
-        // }
 
         public async Task<bool> CreateMovie(MovieRequestDto movie)
         {
@@ -68,16 +32,60 @@ namespace CoreWebApiBase.Services.Services
             return false;
         }
 
-        // public void DeleteYourEntity(YourEntity entity)
-        // {
-        //     _unitOfWork.YourEntityRepository.Delete(entity);
-        //     _unitOfWork.SaveAsync().Wait(); // This is blocking, consider making it asynchronous
-        // }
+        public async Task<IEnumerable<MovieResponseDto>> GetAllMovies()
+        {
+            var movies = await _repository.GetAll();
+            return _mapper.Map<IEnumerable<MovieResponseDto>>(movies);
+        }
 
-        // public void UpdateYourEntity(YourEntity entity)
-        // {
-        //     _unitOfWork.YourEntityRepository.Update(entity);
-        //     _unitOfWork.SaveAsync().Wait(); // This is blocking, consider making it asynchronous
-        // }
+        public async Task<MovieResponseDto?> GetMovieById(int id)
+        {
+            if (id > 0)
+            {
+                var movie = await _repository.GetById(id);
+                if (movie != null)
+                {
+                    return _mapper.Map<MovieResponseDto>(movie); ;
+                }
+            }
+            return null;
+        }
+
+        public async Task<bool> UpdateMovie(int id, MovieRequestDto movieDto)
+        {
+            if (movieDto != null)
+            {
+                var movie = await _repository.GetById(id);
+                if (movie != null)
+                {
+                    movie.Name = movieDto.Name;
+                    movie.ReleaseYear = movieDto.ReleaseYear;
+                    movie.Genre = (MovieGenre)Enum.Parse(typeof(MovieGenre), movieDto.Genre, true);
+
+                    _repository.Update(movie);
+                    var result = await _unitOfWork.SaveAsync();
+
+                    return result > 0;
+
+                }
+            }
+            return false;
+        }
+
+        public async Task<bool> DeleteMovie(int id)
+        {
+            if (id > 0)
+            {
+                var movie = await _repository.GetById(id);
+                if (movie != null)
+                {
+                    _repository.Delete(movie);
+                    var result = await _unitOfWork.SaveAsync();
+
+                    return result > 0;
+                }
+            }
+            return false;
+        }
     }
 }

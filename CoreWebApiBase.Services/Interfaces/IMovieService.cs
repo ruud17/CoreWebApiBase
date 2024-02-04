@@ -6,18 +6,10 @@ namespace CoreWebApiBase.Services.Interfaces
 {
     public interface IMovieService
     {
-        public Task<IEnumerable<MovieResponseDto>> GetAllMovies();
-
         Task<bool> CreateMovie(MovieRequestDto movie);
-
-
-        //      Task<ProductDetails> GetProductById(int productId);
-
-        // Task<bool> UpdateProduct(ProductDetails productDetails);
-
-        // Task<bool> DeleteProduct(int productId);
-        //         Task<bool> CreateProduct(ProductDetails productDetails);
-
+        public Task<IEnumerable<MovieResponseDto>> GetAllMovies();
+        Task<MovieResponseDto?> GetMovieById(int id);
+        Task<bool> UpdateMovie(int id, MovieRequestDto movie);
+        Task<bool> DeleteMovie(int id);
     }
-
 }
