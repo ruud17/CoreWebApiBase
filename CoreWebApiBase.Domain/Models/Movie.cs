@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using CoreWebApiBase.Domain.Enum;
 
 namespace CoreWebApiBase.Domain.Models
@@ -7,7 +8,8 @@ namespace CoreWebApiBase.Domain.Models
     {
         [Required(ErrorMessage = "Name is required.")]
         [StringLength(40, ErrorMessage = "Name should be at most 40 characters.")]
-        public string? Name { get; set; }
+        [NotNull]
+        public string Name { get; set; }
 
         [Required(ErrorMessage = "Release year is required.")]
         [Range(1800, int.MaxValue, ErrorMessage = "Release year must be greater than or equal to 1800.")]

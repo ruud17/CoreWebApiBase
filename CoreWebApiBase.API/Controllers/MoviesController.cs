@@ -1,5 +1,6 @@
 using CoreWebApiBase.Services.Dto;
 using CoreWebApiBase.Services.Interfaces;
+using CoreWebApiBase.Services.Logger;
 using Microsoft.AspNetCore.Mvc;
 
 namespace UnitOfWorkDemo.Controllers
@@ -9,82 +10,132 @@ namespace UnitOfWorkDemo.Controllers
     public class MoviesController : ControllerBase
     {
         public readonly IMovieService _movieService;
-        public MoviesController(IMovieService movieService)
+        private readonly ILoggerService _logger;
+
+        public MoviesController(IMovieService movieService, ILoggerService logger)
         {
             _movieService = movieService;
+            _logger = logger;
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateMovie(MovieRequestDto movieDto)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                var movieSuccessfullyCreated = await _movieService.CreateMovie(movieDto);
+
+                if (movieSuccessfullyCreated)
+                {
+                    _logger.LogInformation(LoggingMessages.GetMovieLogMessage(LogMessageType.MovieCreated, movieDto.Name));
+                    return CreatedAtAction(nameof(CreateMovie), movieDto);
+                }
+
+                _logger.LogError(LoggingMessages.GetMovieLogMessage(LogMessageType.MovieCreateError, movieDto.Name));
+                return BadRequest();
             }
-            var isMovieCreated = await _movieService.CreateMovie(movieDto);
-
-            return isMovieCreated ? Ok(movieDto) : BadRequest();
+            catch (Exception ex)
+            {
+                _logger.LogError(LoggingMessages.GetMovieLogMessage(LogMessageType.CommonError), ex);
+                return StatusCode(500, ex);
+            }
         }
-
 
         [HttpGet]
         public async Task<IActionResult> GetAllMovies()
         {
-            var movies = await _movieService.GetAllMovies();
-            if (movies == null)
+            try
             {
+                var movies = await _movieService.GetAllMovies();
+                if (movies != null)
+                {
+                    _logger.LogInformation(LoggingMessages.GetMovieLogMessage(LogMessageType.GetAllMovies));
+                    return Ok(movies);
+                }
+
+                _logger.LogError(LoggingMessages.GetMovieLogMessage(LogMessageType.GetAllMoviesError));
                 return NotFound();
             }
-            return Ok(movies);
+            catch (Exception ex)
+            {
+                _logger.LogError(LoggingMessages.GetMovieLogMessage(LogMessageType.CommonError), ex);
+                return StatusCode(500, ex);
+            }
+
         }
 
-        [HttpGet("{movieId}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetMovieById(int id)
         {
-            var movie = await _movieService.GetMovieById(id);
+            try
+            {
+                var movie = await _movieService.GetMovieById(id);
+                if (movie != null)
+                {
+                    _logger.LogInformation(LoggingMessages.GetMovieLogMessage(LogMessageType.GetSingleMovie, movie.Name, id));
+                    return Ok(movie);
+                }
 
-            if (movie != null)
-            {
-                return Ok(movie);
-            }
-            else
-            {
+                _logger.LogError(LoggingMessages.GetMovieLogMessage(LogMessageType.GetSingleMovieError, null, id));
                 return BadRequest();
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(LoggingMessages.GetMovieLogMessage(LogMessageType.CommonError), ex);
+                return StatusCode(500, ex);
+            }
+
         }
 
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMovie(int id, MovieRequestDto movieDto)
         {
-            if (movieDto != null)
+            try
             {
                 var movieCreated = await _movieService.UpdateMovie(id, movieDto);
                 if (movieCreated)
                 {
+                    _logger.LogInformation(LoggingMessages.GetMovieLogMessage(LogMessageType.MovieUpdated, movieDto.Name, id));
                     return Ok(movieCreated);
                 }
+
+                _logger.LogError(LoggingMessages.GetMovieLogMessage(LogMessageType.MovieUpdateError, movieDto.Name, id));
                 return BadRequest();
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest();
+                _logger.LogError(LoggingMessages.GetMovieLogMessage(LogMessageType.CommonError), ex);
+                return StatusCode(500, ex);
             }
+
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(int id)
         {
-            var movieDeleted = await _movieService.DeleteMovie(id);
+            try
+            {
+                var movieDeleted = await _movieService.DeleteMovie(id);
 
-            if (movieDeleted)
-            {
-                return Ok(movieDeleted);
-            }
-            else
-            {
+                if (movieDeleted)
+                {
+                    _logger.LogInformation(LoggingMessages.GetMovieLogMessage(LogMessageType.MovieDeleted, null, id));
+                    return Ok(movieDeleted);
+                }
+
+                _logger.LogError(LoggingMessages.GetMovieLogMessage(LogMessageType.MovieDeleteError, null, id));
                 return BadRequest();
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(LoggingMessages.GetMovieLogMessage(LogMessageType.CommonError), ex);
+                return StatusCode(500, ex);
+            }
+
         }
     }
 }

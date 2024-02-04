@@ -30,6 +30,11 @@ namespace CoreWebApiBase.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CoreWebApiBase API", Version = "v1" });
             });
 
+            services.AddLogging(builder =>
+            {
+                builder.AddConsole();
+            });
+
             services.AddDbContext<MovieContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));

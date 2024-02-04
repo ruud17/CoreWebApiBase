@@ -1,5 +1,4 @@
 using AutoMapper;
-using CoreWebApiBase.Domain.Enum;
 using CoreWebApiBase.Domain.Interfaces;
 using CoreWebApiBase.Domain.Models;
 using CoreWebApiBase.Services.Dto;
@@ -22,14 +21,10 @@ namespace CoreWebApiBase.Services.Services
 
         public async Task<bool> CreateMovie(MovieRequestDto movie)
         {
-            if (movie != null)
-            {
-                await _repository.Add(_mapper.Map<Movie>(movie));
-                var result = await _unitOfWork.SaveAsync();
+            await _repository.Add(_mapper.Map<Movie>(movie));
+            var result = await _unitOfWork.SaveAsync();
 
-                return result > 0;
-            }
-            return false;
+            return result > 0;
         }
 
         public async Task<IEnumerable<MovieResponseDto>> GetAllMovies()
@@ -40,50 +35,39 @@ namespace CoreWebApiBase.Services.Services
 
         public async Task<MovieResponseDto?> GetMovieById(int id)
         {
-            if (id > 0)
-            {
-                var movie = await _repository.GetById(id);
-                if (movie != null)
-                {
-                    return _mapper.Map<MovieResponseDto>(movie); ;
-                }
-            }
-            return null;
+
+            var movie = await _repository.GetById(id);
+            return movie != null ? _mapper.Map<MovieResponseDto>(movie) : null;
         }
 
         public async Task<bool> UpdateMovie(int id, MovieRequestDto movieDto)
         {
-            if (movieDto != null)
+            var movie = await _repository.GetById(id);
+
+            if (movie != null)
             {
-                var movie = await _repository.GetById(id);
-                if (movie != null)
-                {
-                    movie.Name = movieDto.Name;
-                    movie.ReleaseYear = movieDto.ReleaseYear;
-                    movie.Genre = (MovieGenre)Enum.Parse(typeof(MovieGenre), movieDto.Genre, true);
+                movie.Name = movieDto.Name;
+                movie.ReleaseYear = movieDto.ReleaseYear;
+                movie.Genre = movieDto.Genre;
 
-                    _repository.Update(movie);
-                    var result = await _unitOfWork.SaveAsync();
+                _repository.Update(movie);
+                var result = await _unitOfWork.SaveAsync();
 
-                    return result > 0;
-
-                }
+                return result > 0;
             }
             return false;
         }
 
         public async Task<bool> DeleteMovie(int id)
         {
-            if (id > 0)
-            {
-                var movie = await _repository.GetById(id);
-                if (movie != null)
-                {
-                    _repository.Delete(movie);
-                    var result = await _unitOfWork.SaveAsync();
+            var movie = await _repository.GetById(id);
 
-                    return result > 0;
-                }
+            if (movie != null)
+            {
+                _repository.Delete(movie);
+                var result = await _unitOfWork.SaveAsync();
+
+                return result > 0;
             }
             return false;
         }
